@@ -57,7 +57,7 @@ select_statement = people.select()
 #6 Lets execute our select_query (using with statement helps us to close the connection after execution)
 with engine.connect() as conn:
 
-    result = conn.execute(select_statement)
+    results = conn.execute(select_statement)
 
-    for row in result.fetchall():
+    for row in results.fetchall():
         print(row)
