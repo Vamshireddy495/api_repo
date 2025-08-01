@@ -29,7 +29,7 @@ class Thing(Base):
     __tablename__ = 'things'
 
     id = Column(Integer, primary_key = True)
-    description = Column(String(150), nullable = False)
+    description = Column(String(150), nullable = False, unique = True)
     value = Column(Integer)
     owner = Column(Integer, ForeignKey('people.id'))
 
@@ -42,6 +42,14 @@ session = Session()                         #Create Instance of Session
 
 # new_person = Person(name= 'Chaitanya', age = 41)
 # session.add(new_person)                             #execute the query
+
+insert_query = session.query(Person).filter_by(name = 'Alice').first()
+if insert_query:
+    item = Thing(description='Laptop', value = 2000)
+    insert_query.things.append(item)
+    session.commit()
+
+session.close()
 
 with session:
     
