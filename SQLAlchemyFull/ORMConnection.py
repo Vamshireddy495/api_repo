@@ -43,8 +43,12 @@ session = Session()                         #Create Instance of Session
 # new_person = Person(name= 'Chaitanya', age = 41)
 # session.add(new_person)                             #execute the query
 
-session.commit()
+update_person = session.query(Person).filter_by(name='Sam').one_or_none()
+
+if update_person:
+    update_person.name = "zach"
+    session.commit()
+else:
+    print("Not found")
 
 session.close()
-
-
