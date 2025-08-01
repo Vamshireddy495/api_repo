@@ -23,8 +23,8 @@ class Person(Base):                 #Singular
     age = Column(Integer)
 #declare relationship
     things = relationship('Thing', back_populates = 'person')
-
-
+    
+    
 class Thing(Base):
     __tablename__ = 'things'
 
@@ -51,4 +51,18 @@ if update_person:
 else:
     print("Not found")
 
-session.close()
+with session:
+
+    select_query = session.query(Person).all()
+    if select_query:
+        print([p.name for p in select_query])
+            
+with session:
+
+    delete_person = session.query(Person).filter_by(name='zach').first()
+
+    if delete_person:
+        session.delete(delete_person)
+        session.commit()
+    else:
+        print("Not found")
