@@ -9,8 +9,6 @@ engine = create_engine("mysql+pymysql://root:admin%40123@localhost:3306/ap",echo
 # with engine.connection as conn:
      #conn.execute(statement)
 
-Session = sessionmaker(engine)
-
 # Create a Base class
 Base = declarative_base()
 
@@ -43,19 +41,19 @@ session = Session()                         #Create Instance of Session
 # new_person = Person(name= 'Chaitanya', age = 41)
 # session.add(new_person)                             #execute the query
 
-insert_query = session.query(Person).filter_by(name = 'Alice').first()
-if insert_query:
-    item = Thing(description='Laptop', value = 2000)
-    insert_query.things.append(item)
-    session.commit()
+# insert_query = session.query(Person).filter_by(name = 'Julien').first()
+# if insert_query:
+#     item = Thing(description='Charger', value = 30)
+#     insert_query.things.append(item)
+#     session.commit()
 
 session.close()
 
 with session:
     
-    update_person = session.query(Person).filter_by(name='Sam').one_or_none()
+    update_person = session.query(Person).filter_by(name='Amber').first()
     if update_person:
-        update_person.name = "zach"
+        update_person.name = "Julien"
         session.commit()
     else:
         print("Not found")
@@ -65,13 +63,24 @@ with session:
     select_query = session.query(Person).all()
     if select_query:
         print([p.name for p in select_query])
-            
+
+
 with session:
 
-    delete_person = session.query(Person).filter_by(name='zach').first()
+    select_statement = session.query(Person.name, Person.age)
 
-    if delete_person:
-        session.delete(delete_person)
-        session.commit()
-    else:
-        print("Not found")
+    for name, age in select_statement:
+        print(f"name:{name}, age:{age}")
+
+# with session:
+#     delete_query = session.query(Person).filter_by(name = 'Julien').first()
+#     if delete_query:
+#         session.delete(delete_query)
+#         session.commit()
+#     else:
+#         print('not found')
+
+with session:
+    x = session.query(Thing).filter(Thing.owner == 5)
+    for row in x:
+        print(row.owner, row.description, row.value)
