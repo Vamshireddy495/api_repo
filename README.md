@@ -1,1 +1,1 @@
-This project files explains the basis to intermediate concepts of APIs.
+This project files explains the basics to intermediate concepts of APIs.
