@@ -14,12 +14,20 @@ jobs:
         run: |
           echo this is a multi-line comment
           echo and this job has been executed from my self-hosted runner
+          
+      - uses: actions/checkout@v4
+      - name: Run tests
+        run: echo "Tests passed!"
+      - name: Deploy
+        run: echo "🚀 Deployed!"
+        
   greet:
     runs-on: ubuntu-latest
     steps:
-    - name: Say Hello
-      run: echo "Hello World!"
-    - name: List files
-      run: ls -la
+      - uses: actions/checkout@v4
+      - name: Run tests
+        run: echo "Tests passed!"
+      - name: Deploy
+        run: echo "🚀 Deployed!"
       
     
