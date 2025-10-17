@@ -1,30 +1,35 @@
+name: Example Workflow
+
+on: [push]
+
 jobs:
-  deploy:
-    needs: [test, build]  # Depends on previous jobs
+  build:
     runs-on: ubuntu-latest
     steps:
-      # SYNTAX 1: 'name' + 'uses' (Simple action)
-      - name: Checkout code
+      # SYNTAX 1: 'name' + 'uses' + 'with' (Checkout with options)
+      - name: Checkout repository
         uses: actions/checkout@v4
-      
-      # SYNTAX 2: 'name' + 'run' + 'env' (Secure secrets)
-      - name: Configure AWS credentials
-        run: |
-          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY }}
-          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_KEY }}
-        env:
-          AWS_REGION: us-east-1
-      
-      # SYNTAX 3: 'name' + 'run' + 'working-directory' (Deploy from dist)
-      - name: Deploy to S3
-        run: aws s3 sync ./dist/ s3://myapp-bucket --delete
-        working-directory: ${{ env.BUILD_DIR }}
-      
-      # SYNTAX 4: 'name' + 'uses' + 'with' + 'if' (Conditional step)
-      - name: Notify Slack
-        if: always()  # Runs even if previous steps fail
-        uses: 007revad/Slack-GitHub-Action@v1.2.0
         with:
-          slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
-          channel-id: 'deployments'
-          message: '🚀 Deployment to production completed!'
+          submodules: recursive
+      
+      # SYNTAX 2: 'name' + 'run' (Simple command)
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      # SYNTAX 3: 'name' + 'run' (Multi-line script)
+      - name: Build application
+        run: |
+          npm ci
+          npm run build
+          echo "BUILD_DIR=./dist" >> $GITHUB_ENV
+      
+      # SYNTAX 4: 'name' + 'uses' + 'with' + 'id' (Action with output reference)
+      - name: Build Docker image
+        id: docker
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          tags: myapp:latest
